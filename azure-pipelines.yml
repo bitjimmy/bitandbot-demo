@@ -52,10 +52,10 @@ steps:
 # https://docs.microsoft.com/en-us/dotnet/standard/frameworks
 # publish release files to $(Build.BinariesDirectory) without zip to avoid double zip
 - task: DotNetCoreCLI@2
-  displayName: 'API: Publish .Net Core 3.0'
+  displayName: 'API: Publish .Net Core 3.1'
   inputs:
     command: 'publish'
-    arguments: $(Build.SourcesDirectory)/src/bitandbot.demo.api/bitandbot.demo.api.csproj -f netcoreapp3.0 -r win-x86 --self-contained false -c $(buildConfiguration) -o $(Build.BinariesDirectory)
+    arguments: $(Build.SourcesDirectory)/src/bitandbot.demo.api/bitandbot.demo.api.csproj -f netcoreapp3.1 -r win-x86 --self-contained false -c $(buildConfiguration) -o $(Build.BinariesDirectory)
     publishWebProjects: false
     zipAfterPublish: false
     workingDirectory: '$(Build.SourcesDirectory)/src/bitandbot.demo.api'
