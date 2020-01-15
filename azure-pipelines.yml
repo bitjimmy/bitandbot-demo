@@ -46,3 +46,27 @@ steps:
     summaryFileLocation: $(Build.SourcesDirectory)/test/bitandbot.demo.test/TestResults/Coverage/**/coverage.cobertura.xml
     reportDirectory: $(Build.SourcesDirectory)/test/bitandbot.demo.test/TestResults/Coverage/Reports
     failIfCoverageEmpty: false 
+
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+# https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish?tabs=netcore21
+# https://docs.microsoft.com/en-us/dotnet/standard/frameworks
+# publish release files to $(Build.BinariesDirectory) without zip to avoid double zip
+- task: DotNetCoreCLI@2
+  displayName: 'API: Publish'
+  inputs:
+    command: 'publish'
+    arguments: $(Build.SourcesDirectory)/src/bitandbot.demo.api/bitandbot.demo.api.csproj -f netcoreapp3.1 -r win-x86 --self-contained false -c $(buildConfiguration) -o $(Build.BinariesDirectory)
+    publishWebProjects: false
+    zipAfterPublish: false
+    workingDirectory: '$(Build.SourcesDirectory)/src/bitandbot.demo.api'
+
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/copy-files?view=azure-devops&tabs=yaml
+# http://man7.org/linux/man-pages/man3/fnmatch.3.html
+# copy from output files (release) to staging directory where files will be placed into Azure pipeline for next step (RELEASE)
+- task: CopyFiles@2
+  displayName: 'API: Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.BinariesDirectory)'
+    contents: '**'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+    cleanTargetFolder: true
