@@ -78,3 +78,35 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: '$(Build.BuildNumber)$(Build.BuildId)'
     publishLocation: 'Container'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Blazor: Publish .Net Core 3.1 with .Net Standard 2.1'
+  inputs:
+    command: 'publish'
+    arguments: $(Build.SourcesDirectory)/src/bitandbot.demo.blazor/bitandbot.demo.blazor.csproj -f netstandard2.1 -c $(buildConfiguration) -o $(Build.BinariesDirectory)_blazor
+    publishWebProjects: false
+    zipAfterPublish: false
+    workingDirectory: '$(Build.SourcesDirectory)/src/bitandbot.demo.blazor'
+
+- task: CopyFiles@2
+  displayName: 'Blazor: Copy missing files in _content folder to: $(Build.BinariesDirectory)_blazor'
+  inputs:
+    SourceFolder: '$(Build.BinariesDirectory)_blazor/wwwroot/_content'
+    contents: '**'
+    targetFolder: '$(Build.BinariesDirectory)_blazor/bitandbot.demo.blazor/dist/_content'
+    cleanTargetFolder: false
+
+- task: CopyFiles@2
+  displayName: 'Blazor: Copy files in distribution folder to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.BinariesDirectory)_blazor/bitandbot.demo.blazor/dist'
+    contents: '**'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+    cleanTargetFolder: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Blazor: Publish Artifact from: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(Build.BuildNumber)$(Build.BuildId)_blazor'
+    publishLocation: 'Container'
