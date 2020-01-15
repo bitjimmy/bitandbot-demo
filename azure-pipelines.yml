@@ -88,13 +88,14 @@ steps:
     zipAfterPublish: false
     workingDirectory: '$(Build.SourcesDirectory)/src/bitandbot.demo.blazor'
 
-- task: CopyFiles@2
-  displayName: 'Blazor: Copy missing files in _content folder to: $(Build.BinariesDirectory)_blazor'
-  inputs:
-    SourceFolder: '$(Build.BinariesDirectory)_blazor/wwwroot/_content'
-    contents: '**'
-    targetFolder: '$(Build.BinariesDirectory)_blazor/bitandbot.demo.blazor/dist/_content'
-    cleanTargetFolder: false
+# To be included when using 3rd or custom Razor components 
+#- task: CopyFiles@2
+#  displayName: 'Blazor: Copy missing files in _content folder to: $(Build.BinariesDirectory)_blazor'
+#  inputs:
+#    SourceFolder: '$(Build.BinariesDirectory)_blazor/wwwroot/_content'
+#    contents: '**'
+#    targetFolder: '$(Build.BinariesDirectory)_blazor/bitandbot.demo.blazor/dist/_content'
+#    cleanTargetFolder: false
 
 - task: CopyFiles@2
   displayName: 'Blazor: Copy files in distribution folder to: $(Build.ArtifactStagingDirectory)'
